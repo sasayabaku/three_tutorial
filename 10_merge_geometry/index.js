@@ -1,14 +1,18 @@
-window.addEventListener('DOMContentLoaded', init);
+window.addEventListener('DOMContentLoaded', not_good);
+
+// WebGLレンダラー
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.querySelector('#myCanvas'),
+});
+
+// requestAnimationFrameの保持
+var myReq;
 
 function init() {
     // サイズを指定
     const width = 960;
     const height = 540;
 
-    // レンダラーを作成
-    const renderer = new THREE.WebGLRenderer({
-        canvas: document.querySelector("#myCanvas"),
-    });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(width, height);
 
@@ -74,7 +78,7 @@ function init() {
         // フレームレートを表示
         stats.update();
 
-        requestAnimationFrame(tick);
+        myReq = requestAnimationFrame(tick);
     }
 }
 
@@ -84,9 +88,6 @@ function not_good() {
 
     const CELL_NUM = 20;
 
-    const renderer = new THREE.WebGLRenderer({
-        canvas: document.querySelector('#myCanvas'),
-    });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(width, height);
 
@@ -144,6 +145,26 @@ function not_good() {
         // フレームレートの表示
         stats.update();
 
-        requestAnimationFrame(tick);
+        myreq = requestAnimationFrame(tick);
     }
 }
+
+function valueChange() {
+    // SwitchをToggleした時の処理
+    console.log("changed");
+
+    let localChecked = document.getElementById('optimization').checked;
+
+    if (localChecked) {
+        renderer.clear();
+        cancelAnimationFrame(myReq);
+        init();
+    } else {
+        renderer.clear();
+        cancelAnimationFrame(myReq);
+        not_good();
+    }
+};
+
+let checkbox = document.getElementById('optimization');
+checkbox.addEventListener('change', valueChange);
