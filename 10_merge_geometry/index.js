@@ -56,7 +56,7 @@ function init() {
     // フレームレートの数値を画面に表示
     const stats = new Stats();
     stats.domElement.style.position = 'absolute';
-    stats.domElement.style.top = '10px';
+    stats.domElement.style.top = '200px';
     document.body.appendChild(stats.domElement);
 
     tick();
@@ -72,6 +72,76 @@ function init() {
         document.getElementById('info').innerHTML = JSON.stringify(renderer.info.render, '', '   ');
 
         // フレームレートを表示
+        stats.update();
+
+        requestAnimationFrame(tick);
+    }
+}
+
+function not_good() {
+    const width = 960;
+    const height = 540;
+
+    const CELL_NUM = 20;
+
+    const renderer = new THREE.WebGLRenderer({
+        canvas: document.querySelector('#myCanvas'),
+    });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(width, height);
+
+    // シーンを作成
+    const scene = new THREE.Scene();
+
+    // カメラを作成
+    const camera = new THREE.PerspectiveCamera(45, width / height);
+    camera.position.set(0, 0, 400);
+
+    const container = new THREE.Group();
+    scene.add(container);
+
+    // 共通マテリアル
+    const material =  new THREE.MeshNormalMaterial();
+
+    // Box
+    for (let i = 0; i < CELL_NUM; i++) {
+        for (let j = 0; j < CELL_NUM; j++) {
+            for (let k = 0; k < CELL_NUM; k++) {
+                const mesh = new THREE.Mesh(new THREE.BoxGeometry(5, 5, 5), material);
+
+                // 3次元座標の指定
+                mesh.position.set(
+                    10 * (i - CELL_NUM / 2), 
+                    10 * (j - CELL_NUM / 2), 
+                    10 * (k - CELL_NUM / 2)
+                );
+
+                // メッシュを3D空間に追加
+                container.add(mesh);
+            }
+        }
+    }
+
+    // フレームレートの数値を画面に表示
+    const stats = new Stats();
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.top = '200px';
+    document.body.appendChild(stats.domElement);
+
+    tick();
+
+    function tick() {
+        // 毎フレーム時に実行されるループイベント
+        container.rotation.x += Math.PI / 180;
+        container.rotation.y += Math.PI / 180;
+
+        // レンダリング 
+        renderer.render(scene, camera);
+
+        // レンダリング情報を画面に表示
+        document.getElementById('info').innerHTML = JSON.stringify(renderer.info.render, '', '   ');
+
+        // フレームレートの表示
         stats.update();
 
         requestAnimationFrame(tick);
