@@ -9,13 +9,32 @@ lat = 0, onMouseDownLat = 0,
 phi = 0, theta = 0;
 
 var fov = 240;
-// var wrapper = document.querySelector('.container');
+
+// 埋め込み用コンポーネントの生成
 var wrapper = document.createElement('div');
-wrapper.style.width = '40px';
+wrapper.style.width = '100px';
 wrapper.style.height = '40px';
 wrapper.style.backgroundColor = 'white';
-var text = document.createTextNode("Orbital VSAT");
-wrapper.appendChild(text);
+var p1 = document.createElement('p');
+p1.style.fontSize = '6px';
+var text1 = document.createTextNode("This Wallpaper ");
+var text2 = document.createTextNode("https://pixexid.com/");
+p1.appendChild(text1);
+p1.appendChild(text2);
+wrapper.appendChild(p1);
+
+
+// 埋め込み用コンポーネントの生成②
+var wrapper2 = document.createElement('div');
+wrapper2.style.width = '80px';
+wrapper2.style.height = '40px';
+var iframe = document.createElement('iframe');
+iframe.style.width = '240px';
+iframe.style.height = '120px';
+iframe.style.border = '0px';
+
+iframe.src = 'https://my-room-in-3d.vercel.app';
+wrapper2.appendChild(iframe);
 
 function init() {
 
@@ -30,11 +49,11 @@ function init() {
 
     scene = new THREE.Scene();
 
-    var geometry = new THREE.SphereGeometry( 500, 60, 40 );
+    var geometry = new THREE.SphereGeometry( 500, 500, 500 );
     geometry.scale( - 1, 1, 1 );
 
     var material = new THREE.MeshBasicMaterial( {
-        map: new THREE.TextureLoader().load( './view.jpeg' )
+        map: new THREE.TextureLoader().load( './view2.jpeg' )
     } );
 
     mesh = new THREE.Mesh( geometry, material );
@@ -89,11 +108,18 @@ function init() {
 
     let shap = new THREE.Group();
     var object = new THREE.CSS3DObject(wrapper);
-    object.position.fromArray([30, 10, -100]);
+    object.position.fromArray([0, 10, -200]);
     object.rotation.fromArray([0, 0, 0]);
     shap.add(object);
 
+    let shap2 = new THREE.Group();
+    var object2 = new THREE.CSS3DObject(wrapper2);
+    object2.position.fromArray([200, 10, -300]);
+    object2.rotation.fromArray([0, -(Math.PI/4), 0]);
+    shap2.add(object2);
+
     scene.add(shap);
+    scene.add(shap2);
 
     // WebGLのDOMレンダリング
     animate();
@@ -122,7 +148,7 @@ function update() {
 
     if ( isUserInteracting === false ) {
 
-        lon += 0.01;
+        lon += 0.005;
 
     }
 
