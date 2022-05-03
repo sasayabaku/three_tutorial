@@ -37,12 +37,47 @@ function init() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     container.appendChild( renderer.domElement );
 
+    document.addEventListener('mousedown', onDocumentMouseDown, false);
+    document.addEventListener('mousemove', onDocumentMouseMove, false);
+    document.addEventListener('mouseup', onDocumentMouseUp, false);
+    document.addEventListener('wheel', onDocumentMouseWheel, false);
+
+    // Resize検知したら、WebGLのrendererのサイズを変更する
     window.addEventListener('resize', onWindowResize, false);
+
+    // 画像ファイルをアップロードしたら、その画像のパノラマに変更する。
+    document.addEventListener('dragover', function ( event ) {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'copy';
+    }, false );
+
+    document.addEventListener('dragenter', function ( event ) {
+        document.body.style.opacity = 1;
+    }, false);
+
+    document.addEventListener('drop', function ( event ){
+        event.preventDefault();
+
+        var reader = new FileReader();
+        reader.addEventListener('load', function ( event ) {
+            material.map.image.src = event.target.result;
+            material.map.needsUpdate = true;
+        }, false);
+
+        reader.readAsDataURL( event.dataTransfer.files[0] );
+
+        document.body.style.opacity = 1;
+
+    }, false);
 
     animate();
 }
 
 function onWindowResize() {
+
+    /**
+     * rendererのサイズを変更する
+     */
     
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
@@ -79,3 +114,44 @@ function update() {
 
 }
 
+/**
+ * マウスイベント処理関数
+ */
+
+function onDocumentMouseDown( event ) {
+
+    // preventDefaultで、既定のマウスクリック時の挙動を無効化
+    event.preventDefault();
+
+    isUserInteracting = true;
+
+    onPointerDownPointerX = event.clientX;
+    onPointerDownPointerY = event.clientY;
+
+    onPointerDownLon = lon;
+    onPointerDownLat = lat;
+
+};
+
+function onDocumentMouseMove( event ) {
+
+    /**
+     * cameraのlatitude / longitudeを、マウスの移動具合に応じて変更
+     */
+
+    if (isUserInteracting === true) {
+        lon = ( onPointerDownPointerX - event.clientX ) * 0.1 + onPointerDownLon;
+        lat = ( event.clientY - onPointerDownPointerY ) * 0.1 + onPointerDownLat;
+    };
+
+};
+
+function onDocumentMouseUp( event ) {
+    // onDocumentMouseMoveを無効にする
+    isUserInteracting = false;
+};
+
+function onDocumentMouseWheel( event ) {
+    camera.fov += event.deltaY * 0.05;
+    camera.updateProjectionMatrix();
+};
