@@ -8,6 +8,15 @@ lon = 0, onMouseDownLon = 0,
 lat = 0, onMouseDownLat = 0,
 phi = 0, theta = 0;
 
+var fov = 240;
+// var wrapper = document.querySelector('.container');
+var wrapper = document.createElement('div');
+wrapper.style.width = '40px';
+wrapper.style.height = '40px';
+wrapper.style.backgroundColor = 'white';
+var text = document.createTextNode("Orbital VSAT");
+wrapper.appendChild(text);
+
 function init() {
 
     var container, mesh;
@@ -70,6 +79,23 @@ function init() {
 
     }, false);
 
+    // Div要素のレンダリングを行う
+    renderer2 = new THREE.CSS3DRenderer();
+    renderer2.domElement.style.position = 'absolute';
+    renderer2.domElement.style.top = 0;
+
+    renderer2.setSize( window.innerWidth, window.innerHeight );
+    container.appendChild( renderer2.domElement );
+
+    let shap = new THREE.Group();
+    var object = new THREE.CSS3DObject(wrapper);
+    object.position.fromArray([30, 10, -100]);
+    object.rotation.fromArray([0, 0, 0]);
+    shap.add(object);
+
+    scene.add(shap);
+
+    // WebGLのDOMレンダリング
     animate();
 }
 
@@ -96,7 +122,7 @@ function update() {
 
     if ( isUserInteracting === false ) {
 
-        lon += 0.1;
+        lon += 0.01;
 
     }
 
@@ -111,6 +137,7 @@ function update() {
     camera.lookAt( camera.target );
 
     renderer.render( scene, camera );
+    renderer2.render( scene, camera );
 
 }
 
