@@ -3,6 +3,7 @@
         <ul class="navi_container">
             <NuxtLink to="/"><li class="navi">Animation</li></NuxtLink>
             <NuxtLink to="/shadow"><li class="navi">Shadow</li></NuxtLink>
+            <NuxtLink to="/camera"><li class="navi">Camera / Fog</li></NuxtLink>
         </ul>
     </div>    
 </template>
@@ -22,13 +23,15 @@ a {
 .navi_container {
     list-style: none;
     display: flex;
+    width: 80vw;
+    overflow: scroll;
 }
 
 .navi {
     text-align: center;
     margin: 0 0.5rem;
-    padding: 0.7rem 2rem;
-    width: 10rem;
+    padding: 0.7rem 1.2rem;
+    min-width: 10rem;
     border: 1px solid gray;
     color: gray;
     border-radius: 2rem;
@@ -39,8 +42,8 @@ a {
 a.nuxt-link-exact-active .navi{
     text-align: center;
     margin: 0 0.5rem;
-    padding: 0.7rem 2rem;
-    width: 10rem;
+    padding: 0.7rem 1.2rem;
+    min-width: 10rem;
     border: 1px solid #3d03fc;
     color: #3d03fc;
     border-radius: 2rem;

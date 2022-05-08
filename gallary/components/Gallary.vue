@@ -1,6 +1,5 @@
 <template>
     <div id="container">
-        
         <b-row class="text-center">
             <b-col cols="12">
                 <div>Three.jsでのマテリアルの種類</div>
