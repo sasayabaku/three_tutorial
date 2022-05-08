@@ -4,6 +4,7 @@
     <Header />
     <Gallary />
     <Lights />
+    <Group />
     </div>
 </template>
 

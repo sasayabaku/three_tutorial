@@ -32,7 +32,7 @@
             </b-col>
             <b-col cols="4">
                 <canvas id="sprite_canvas1"></canvas>
-                <h3>Fog Effects</h3>
+                <h3>Sprite Effects</h3>
             </b-col>
         </b-row>
     </div>    

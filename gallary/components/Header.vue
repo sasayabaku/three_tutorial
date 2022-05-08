@@ -1,7 +1,7 @@
 <template>
     <div id="container">
         <ul class="navi_container">
-            <NuxtLink to="/"><li class="navi">Animation</li></NuxtLink>
+            <NuxtLink to="/"><li class="navi">Material</li></NuxtLink>
             <NuxtLink to="/shadow"><li class="navi">Shadow</li></NuxtLink>
             <NuxtLink to="/camera"><li class="navi">Camera / Fog</li></NuxtLink>
         </ul>
