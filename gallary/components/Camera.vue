@@ -43,6 +43,7 @@ export default {
         init1();
         init2();
         init3();
+        init4();
     }
 }
 
@@ -267,6 +268,62 @@ function init3() {
 
     function tick() {
         group.rotateY(0.01);
+        renderer.render(scene, camera);
+        requestAnimationFrame(tick);
+    }
+}
+
+function init4() {
+    const width = 300;
+    const height = 180;
+
+    const renderer = new THREE.WebGLRenderer({
+        canvas: document.querySelector("#sprite_canvas1"),
+        antialias: true,
+        devicePixelRatio: window.devicePixelRatio,
+    });
+    renderer.setSize(width, height);
+    renderer.setClearColor(0xf9f9f9, 1.0);
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0xf9f9f9, 100, 300);
+
+    const camera = new THREE.PerspectiveCamera(45, width / height);
+
+    // マテリアル
+    const material = new THREE.SpriteMaterial({
+        map: new THREE.TextureLoader().load(
+            "https://raw.githubusercontent.com/ics-creative/tutorial-three/master/samples/imgs/star.png"
+        ),
+    });
+    material.fog = true;
+
+    for (let i = 0; i < 500; i++) {
+        const sprite = new THREE.Sprite(material);
+
+        sprite.position.x = 300 * (Math.random() - 0.5);
+        sprite.position.y = 100 * Math.random() - 40;
+        sprite.position.z = 300 * (Math.random() - 0.5);
+
+        // 必要に応じてスケールの調整
+        sprite.scale.set(10, 10, 10);
+
+        scene.add(sprite);
+    }
+
+    const plane = new THREE.GridHelper(300, 10, 0x888888, 0x888888);
+    plane.position.y = -40;
+    scene.add(plane);
+
+    tick();
+
+    function tick() {
+
+        camera.position.x = 100 * Math.sin(Date.now() / 2000);
+        camera.position.z = 100 * Math.cos(Date.now() / 2000);
+        camera.position.y = 50 * Math.sin(Date.now() / 1000) + 60;
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+
         renderer.render(scene, camera);
         requestAnimationFrame(tick);
     }
