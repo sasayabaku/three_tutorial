@@ -1,6 +1,7 @@
 <template>
   <!-- <Tutorial /> -->
   <div>
+    <Header />
     <Gallary />
     <Lights />
     </div>
