@@ -1,10 +1,10 @@
 <template>
     <div id="container">
-        <div id="dev_console">
+        <!-- <div id="dev_console">
             <div id="fov_console">
                 
             </div>
-        </div>
+        </div> -->
         <div id="myCanvas">
         </div>
     </div>
@@ -152,17 +152,13 @@ function onDocumentMouseWheel( event ) {
         camera.fov += event.deltaY * 0.05;
         camera.updateProjectionMatrix();
     }
-    
-
-    var component = document.getElementById('fov_console');
-    component.textContent = "Fov: " + camera.fov.toString();
 };
 
 function onDocumentTouchStart( event ) {
     /**
      * cameraのlatitude / longitudeを、マウスの移動具合に応じて変更
      */
-    // event.preventDefault();
+    event.preventDefault();
 
     isUserInteracting = true;
 
@@ -177,28 +173,38 @@ function onDocumentTouchStart( event ) {
 
 function onDocumentTouchMove( event ) {
 
-    if (isUserInteracting === true) {
-        lon = ( onPointerDownPointerX - event.changedTouches[0].clientX ) * 0.1 + onPointerDownLon;
-        lat = ( event.changedTouches[0].clientY - onPointerDownPointerY ) * 0.1 + onPointerDownLat;
-        console.log("onPointerDownPointerX : " + onPointerDownPointerX.toString());
-        console.log("onPointerDownLon : " + onPointerDownLon.toString());
-        console.log("changeTouches[0] : " + event.changedTouches[0].clientX.toString());
+    if (event.touches.length > 1) {
+        event.preventDefault();
+    }
 
-        console.log("Longi : " + lon.toString());
+    if (isUserInteracting === true) {
+        lon = ( onPointerDownPointerX - event.changedTouches[0].clientX ) * 0.15 + onPointerDownLon;
+        lat = ( event.changedTouches[0].clientY - onPointerDownPointerY ) * 0.15 + onPointerDownLat;
     };
 };
 
 </script>
 
+<style>
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overscroll-behavior: none;
+}
+</style>
+
 <style scoped>
 #container {
-    position: relative;
+    /* canvas全体がずれないように、fixed指定 */
+    position: fixed;
 }
 
 #myCanvas {
     position: relative;
-    width: 1000;
-    height: 1000;
+    width: 100%;
+    height: 100%;
 }
 
 #dev_console {
