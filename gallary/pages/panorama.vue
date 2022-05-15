@@ -59,6 +59,8 @@ function init1() {
 
     document.addEventListener('mousedown', onDocumentMouseDown, false);
     document.addEventListener('mousemove', onDocumentMouseMove, false);
+    document.addEventListener('touchstart', onDocumentTouchStart, false);
+    document.addEventListener('touchmove', onDocumentTouchMove, false);
     document.addEventListener('mouseup', onDocumentMouseUp, false);
     document.addEventListener('wheel', onDocumentMouseWheel, false);
 
@@ -133,7 +135,6 @@ function onDocumentMouseMove( event ) {
         lon = ( onPointerDownPointerX - event.clientX ) * 0.1 + onPointerDownLon;
         lat = ( event.clientY - onPointerDownPointerY ) * 0.1 + onPointerDownLat;
     };
-
 };
 
 function onDocumentMouseUp( event ) {
@@ -155,6 +156,36 @@ function onDocumentMouseWheel( event ) {
 
     var component = document.getElementById('fov_console');
     component.textContent = "Fov: " + camera.fov.toString();
+};
+
+function onDocumentTouchStart( event ) {
+    /**
+     * cameraのlatitude / longitudeを、マウスの移動具合に応じて変更
+     */
+    // event.preventDefault();
+
+    isUserInteracting = true;
+
+    console.log(event);
+
+    onPointerDownPointerX = event.changedTouches[0].clientX;
+    onPointerDownPointerY = event.changedTouches[0].clientY;
+
+    onPointerDownLon = lon;
+    onPointerDownLat = lat;
+}
+
+function onDocumentTouchMove( event ) {
+
+    if (isUserInteracting === true) {
+        lon = ( onPointerDownPointerX - event.changedTouches[0].clientX ) * 0.1 + onPointerDownLon;
+        lat = ( event.changedTouches[0].clientY - onPointerDownPointerY ) * 0.1 + onPointerDownLat;
+        console.log("onPointerDownPointerX : " + onPointerDownPointerX.toString());
+        console.log("onPointerDownLon : " + onPointerDownLon.toString());
+        console.log("changeTouches[0] : " + event.changedTouches[0].clientX.toString());
+
+        console.log("Longi : " + lon.toString());
+    };
 };
 
 </script>
