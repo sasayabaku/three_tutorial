@@ -16,7 +16,7 @@ export default {
     }
 }
 
-var camera, scene, renderer;
+var camera, scene, renderer, renderer2;
 var isUserInteracting = false,
 onMouseDownMouseX = 0, onMouseDownMouseY = 0,
 lon = 0, onMouseDownLon = 0,
@@ -40,7 +40,7 @@ function init1() {
 
     scene = new THREE.Scene();
 
-    var geometry = new THREE.SphereGeometry( 500, 500, 500 );
+    var geometry = new THREE.SphereGeometry( 800, 500, 500 );
     geometry.scale(-1, 1, 1);
 
     var material = new THREE.MeshBasicMaterial({
@@ -51,11 +51,46 @@ function init1() {
 
     scene.add( mesh );
 
-
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     container.appendChild( renderer.domElement );
+
+    // CSS3DObject
+    const element = document.createElement('div');
+    element.className = 'element';
+    element.style.backgroundColor = 'rgba(0, 127, 127,' + (Math.random() * 0.5 * 0.25) + ')';
+
+    const number = document.createElement('div');
+    number.className = 'number';
+    number.textContent = (( 2 / 5 ) + 1) * 10;
+    element.appendChild( number );
+
+    const symbol = document.createElement('div');
+    symbol.className = 'symbol';
+    symbol.textContent = "Be";
+    element.appendChild(symbol);
+
+    const details = document.createElement('div');
+    details.className = 'details';
+    details.innerHTML = "Beryllium" + '<br>' + "9.012182";
+    element.appendChild(details);
+
+    const objectCSS = new THREE.CSS3DObject( element );
+    // objectCSS.position.x = Math.random() * 4000 - 2000;
+    // objectCSS.position.y = Math.random() * 4000 - 2000;
+    // objectCSS.position.z = Math.random() * 4000 - 2000;
+    objectCSS.position.x = 45;
+    objectCSS.position.y = 0;
+    objectCSS.position.z = -200;
+    scene.add( objectCSS );
+
+    renderer2 = new THREE.CSS3DRenderer();
+    renderer2.domElement.style.position = 'absolute';
+    renderer2.domElement.style.top = 0;
+
+    renderer2.setSize( window.innerWidth, window.innerHeight );
+    container.appendChild(renderer2.domElement );
 
     document.addEventListener('mousedown', onDocumentMouseDown, false);
     document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -67,11 +102,35 @@ function init1() {
     // Resize検知したら、WebGLのrendererのサイズを変更する
     window.addEventListener('resize', onWindowResize, false);
 
+    // 画像ファイルをアップロードしたら、その画像のパノラマに変更する
+    document.addEventListener('dragover', function (event) {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'copy';
+    }, false);
 
+    document.addEventListener('dragenter', function (event) {
+        document.body.style.opacity = 1;
+    }, false);
+
+    document.addEventListener('drop', function (event) {
+        event.preventDefault();
+
+        var reader = new FileReader();
+        reader.addEventListener('load', function (event) {
+            material.map.image.src = event.target.result;
+            material.map.needsUpdate = true;
+        }, false);
+
+        reader.readAsDataURL( event.dataTransfer.files[0] );
+
+        document.body.style.opacity = 1;
+    }, false);
 
     animate();
 
 }
+
+/* 各関数 */
 
 function animate() {
     requestAnimationFrame(animate);
@@ -91,13 +150,14 @@ function update() {
     camera.lookAt(camera.target);
 
     renderer.render(scene, camera);
+    renderer2.render(scene, camera);
 }
 
 function onWindowResize() {
 
     /**
      * rendererのサイズを変更する
-     */
+    **/
     
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
@@ -105,12 +165,11 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-
-/**
- * マウスイベント処理関数
- */
-
 function onDocumentMouseDown( event ) {
+
+    /**
+     * マウス押下時、カメラ座標を変更
+    **/
 
     // preventDefaultで、既定のマウスクリック時の挙動を無効化
     event.preventDefault();
@@ -129,7 +188,7 @@ function onDocumentMouseMove( event ) {
 
     /**
      * cameraのlatitude / longitudeを、マウスの移動具合に応じて変更
-     */
+    **/
 
     if (isUserInteracting === true) {
         lon = ( onPointerDownPointerX - event.clientX ) * 0.1 + onPointerDownLon;
@@ -145,7 +204,7 @@ function onDocumentMouseUp( event ) {
 function onDocumentMouseWheel( event ) {
 
     // 拡大・縮小の範囲を定義 (Fov : 45 ~ 110)
-    if (event.deltaY > 0 && camera.fov < 110) {
+    if (event.deltaY > 0 && camera.fov < 120) {
         camera.fov += event.deltaY * 0.05;
         camera.updateProjectionMatrix();
     } else if (event.deltaY <= 0 && camera.fov > 45) {
@@ -158,11 +217,9 @@ function onDocumentTouchStart( event ) {
     /**
      * cameraのlatitude / longitudeを、マウスの移動具合に応じて変更
      */
-    event.preventDefault();
+    // event.preventDefault();
 
     isUserInteracting = true;
-
-    console.log(event);
 
     onPointerDownPointerX = event.changedTouches[0].clientX;
     onPointerDownPointerY = event.changedTouches[0].clientY;
@@ -193,6 +250,58 @@ body {
     padding: 0;
     overscroll-behavior: none;
 }
+
+
+.element {
+    width: 100px;
+    height: 160px;
+    box-shadow: 0px 0px 12px rgba(0,255,255,0.5);
+    border: 1px solid rgba(127,255,255,0.25);
+    font-family: Helvetica, sans-serif;
+    text-align: center;
+    line-height: normal;
+    cursor: default;
+    z-index: 100;
+}
+
+.element .number {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 12px;
+    color: rgba(127,255,255,0.75);
+}
+
+.element .symbol {
+    position: absolute;
+    top: 40px;
+    left: 0px;
+    right: 0px;
+    font-size: 50px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.75);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
+}
+
+.element .details {
+    position: absolute;
+    bottom: 15px;
+    left: 0px;
+    right: 0px;
+    font-size: 12px;
+    color: rgba(127, 255, 255, 0.75);
+}
+
+.element:hover {
+    box-shadow: 0px 0px 30px rgba(0, 255, 255, 0.875);
+}
+
+
+
+.element:hover .details {
+    color: rgba(127, 255, 255, 0.95);
+}
+
 </style>
 
 <style scoped>

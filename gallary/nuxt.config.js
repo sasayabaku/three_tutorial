@@ -27,12 +27,12 @@ export default {
       },
       {
         src: 'https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js',
-        async: true
+        defer: true
       },
-      // {
-      //   src: 'https://unpkg.com/three@0.137.4/examples/js/renderers/CSS3DRenderer.js',
-      //   async: true
-      // },
+      {
+        src: 'https://unpkg.com/three@0.137.4/examples/js/renderers/CSS3DRenderer.js',
+        defer: true
+      },
       {
         src: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js',
         integrity: 'sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==',
