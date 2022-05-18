@@ -114,6 +114,19 @@ function init1() {
 
     scene.add( objectCSS2 );
 
+    // CopyLight CSS
+    const copylight_element = document.createElement('div');
+    copylight_element.id = 'cp_el';
+    copylight_element.style.backgroundColor = '#362221';
+
+    const cp_text = document.createElement('div');
+    cp_text.innerHTML = 'This content code is ' + '<a href="https://github.com/mrdoob/three.js/blob/master/examples/css3d_periodictable.html" target="_blank">Here</a>';
+    copylight_element.appendChild(cp_text);
+
+    const cp_objectCSS = new THREE.CSS3DObject( copylight_element );
+    cp_objectCSS.position.set(220, -20, -200);
+
+    scene.add(cp_objectCSS);
 
     renderer2 = new THREE.CSS3DRenderer();
     renderer2.domElement.style.position = 'absolute';
@@ -281,6 +294,17 @@ body {
     overscroll-behavior: none;
 }
 
+#cp_el {
+    z-index: 100;
+    color: white;
+    text-align: center;
+    font-size: 0.6rem;
+}
+
+#cp_el a {
+    text-decoration: none;
+    color: rgba(255,209,82,0.875);
+}
 
 .element {
     width: 100px;
