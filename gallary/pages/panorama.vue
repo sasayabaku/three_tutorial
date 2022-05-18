@@ -19,8 +19,7 @@ export default {
 var camera, scene, renderer, renderer2;
 var isUserInteracting = false,
 onMouseDownMouseX = 0, onMouseDownMouseY = 0,
-lon = 0, onMouseDownLon = 0,
-lat = 0, onMouseDownLat = 0,
+lon = 0, lat = 0, 
 phi = 0, theta = 0;
 
 var onPointerDownPointerX, onPointerDownPointerY, onPointerDownLat, onPointerDownLon
@@ -77,13 +76,44 @@ function init1() {
     element.appendChild(details);
 
     const objectCSS = new THREE.CSS3DObject( element );
-    // objectCSS.position.x = Math.random() * 4000 - 2000;
-    // objectCSS.position.y = Math.random() * 4000 - 2000;
-    // objectCSS.position.z = Math.random() * 4000 - 2000;
+
     objectCSS.position.x = 45;
     objectCSS.position.y = 0;
     objectCSS.position.z = -200;
+
     scene.add( objectCSS );
+
+    // CSS3DObject2
+    const element2 = document.createElement('div');
+    element2.className = 'element';
+    element2.id = 'element2';
+    element2.style.backgroundColor = 'rgba(255, 209, 82,' + (Math.random() * 0.5 * 0.25) + ')';
+
+    const number2 = document.createElement('div');
+    number2.className = 'number';
+    number2.textContent = 88;
+    element2.appendChild( number2 );
+
+    const symbol2 = document.createElement('div');
+    symbol2.className = 'symbol';
+    symbol2.textContent = "Ra";
+    element2.appendChild(symbol2);
+
+    const details2 = document.createElement('div');
+    details2.className = 'details';
+    details.id = 'details2';
+    details2.innerHTML = "Radium" + '<br>' + "226.0";
+    element2.appendChild(details2);
+
+    const objectCSS2 = new THREE.CSS3DObject( element2 );
+
+    objectCSS2.position.x = 400;
+    objectCSS2.position.y = 0;
+    objectCSS2.position.z = -200;
+    objectCSS2.rotation.y = -Math.PI / 2;
+
+    scene.add( objectCSS2 );
+
 
     renderer2 = new THREE.CSS3DRenderer();
     renderer2.domElement.style.position = 'absolute';
@@ -203,11 +233,11 @@ function onDocumentMouseUp( event ) {
 
 function onDocumentMouseWheel( event ) {
 
-    // 拡大・縮小の範囲を定義 (Fov : 45 ~ 110)
-    if (event.deltaY > 0 && camera.fov < 120) {
+    // 拡大・縮小の範囲を定義 (Fov : 60 ~ 130)
+    if (event.deltaY > 0 && camera.fov < 130) {
         camera.fov += event.deltaY * 0.05;
         camera.updateProjectionMatrix();
-    } else if (event.deltaY <= 0 && camera.fov > 45) {
+    } else if (event.deltaY <= 0 && camera.fov > 60) {
         camera.fov += event.deltaY * 0.05;
         camera.updateProjectionMatrix();
     }
@@ -302,6 +332,26 @@ body {
     color: rgba(127, 255, 255, 0.95);
 }
 
+#element2 {
+    box-shadow: 0px 0px 12px rgba(255,209,82,0.5);
+}
+
+#element2 .number {
+    color: rgba(255,209,82,0.75);
+}
+
+#element2 .symbol {
+    text-shadow: 0 0 10px rgba(255,209,82,0.95);
+}
+
+#element2 .details {
+    color: rgba(255,209,82,0.75);
+}
+
+#element2:hover {
+    box-shadow: 0px 0px 30px rgba(255,209,82,0.875);
+}
+
 </style>
 
 <style scoped>
@@ -329,4 +379,5 @@ body {
     left: 80%;
     z-index: 1;
 }
+
 </style>
