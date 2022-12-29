@@ -1,18 +1,15 @@
 <template>
     <div id="container">
-        <!-- <div id="dev_console">
-            <div id="fov_console">
-                
-            </div>
-        </div> -->
         <div id="myCanvas">
         </div>
     </div>
 </template>
+
 <script>
 export default {
     mounted() {
         init1();
+        // init2();
     }
 }
 
@@ -55,64 +52,11 @@ function init1() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     container.appendChild( renderer.domElement );
 
-    // CSS3DObject
-    const element = document.createElement('div');
-    element.className = 'element';
-    element.style.backgroundColor = 'rgba(0, 127, 127,' + (Math.random() * 0.5 * 0.25) + ')';
+    init2();
 
-    const number = document.createElement('div');
-    number.className = 'number';
-    number.textContent = (( 2 / 5 ) + 1) * 10;
-    element.appendChild( number );
+    init3();
 
-    const symbol = document.createElement('div');
-    symbol.className = 'symbol';
-    symbol.textContent = "Be";
-    element.appendChild(symbol);
-
-    const details = document.createElement('div');
-    details.className = 'details';
-    details.innerHTML = "Beryllium" + '<br>' + "9.012182";
-    element.appendChild(details);
-
-    const objectCSS = new THREE.CSS3DObject( element );
-
-    objectCSS.position.x = 45;
-    objectCSS.position.y = 0;
-    objectCSS.position.z = -200;
-
-    scene.add( objectCSS );
-
-    // CSS3DObject2
-    const element2 = document.createElement('div');
-    element2.className = 'element';
-    element2.id = 'element2';
-    element2.style.backgroundColor = 'rgba(255, 209, 82,' + (Math.random() * 0.5 * 0.25) + ')';
-
-    const number2 = document.createElement('div');
-    number2.className = 'number';
-    number2.textContent = 88;
-    element2.appendChild( number2 );
-
-    const symbol2 = document.createElement('div');
-    symbol2.className = 'symbol';
-    symbol2.textContent = "Ra";
-    element2.appendChild(symbol2);
-
-    const details2 = document.createElement('div');
-    details2.className = 'details';
-    details.id = 'details2';
-    details2.innerHTML = "Radium" + '<br>' + "226.0";
-    element2.appendChild(details2);
-
-    const objectCSS2 = new THREE.CSS3DObject( element2 );
-
-    objectCSS2.position.x = 400;
-    objectCSS2.position.y = 0;
-    objectCSS2.position.z = -200;
-    objectCSS2.rotation.y = -Math.PI / 2;
-
-    scene.add( objectCSS2 );
+    event_initialization();
 
     // CopyLight CSS
     const copylight_element = document.createElement('div');
@@ -135,6 +79,77 @@ function init1() {
     renderer2.setSize( window.innerWidth, window.innerHeight );
     container.appendChild(renderer2.domElement );
 
+
+
+    animate();
+
+}
+
+function init2() {
+    // CSS3DObject
+    const element = document.createElement('div');
+    element.className = 'element';
+    element.style.backgroundColor = 'rgba(200, 200, 200,' + (0.5) + ')';
+
+    const number = document.createElement('div');
+    number.className = 'number';
+    number.textContent = (( 2 / 5 ) + 1) * 10;
+    element.appendChild( number );
+
+    const symbol = document.createElement('div');
+    symbol.className = 'symbol';
+    symbol.textContent = "Be";
+    element.appendChild(symbol);
+
+    const details = document.createElement('div');
+    details.className = 'details';
+    details.innerHTML = "Beryllium" + '<br>' + "9.012182";
+    element.appendChild(details);
+
+    const objectCSS = new THREE.CSS3DObject( element );
+
+    objectCSS.position.x = 200;
+    objectCSS.position.y = 0;
+    objectCSS.position.z = 0;
+    objectCSS.rotation.y = -Math.PI / 2;
+
+    scene.add( objectCSS );
+}
+
+function init3(){
+    // CSS3DObject2
+    const element2 = document.createElement('div');
+    element2.className = 'element';
+    element2.id = 'element2';
+    element2.style.backgroundColor = 'rgba(200, 200, 200,' + (0.75) + ')';
+
+    const number2 = document.createElement('div');
+    number2.className = 'number';
+    number2.textContent = 88;
+    element2.appendChild( number2 );
+
+    const symbol2 = document.createElement('div');
+    symbol2.className = 'symbol';
+    symbol2.textContent = "Ra";
+    element2.appendChild(symbol2);
+
+    const details2 = document.createElement('div');
+    details2.className = 'details';
+    details2.id = 'details2';
+    details2.innerHTML = "Radium" + '<br>' + "226.0";
+    element2.appendChild(details2);
+
+    const objectCSS2 = new THREE.CSS3DObject( element2 );
+
+    objectCSS2.position.x = 200;
+    objectCSS2.position.y = 0;
+    objectCSS2.position.z = 120;
+    objectCSS2.rotation.y = -Math.PI / 2;
+
+    scene.add( objectCSS2 );
+}
+
+function event_initialization() {
     document.addEventListener('mousedown', onDocumentMouseDown, false);
     document.addEventListener('mousemove', onDocumentMouseMove, false);
     document.addEventListener('touchstart', onDocumentTouchStart, false);
@@ -168,13 +183,9 @@ function init1() {
 
         document.body.style.opacity = 1;
     }, false);
-
-    animate();
-
 }
 
 /* 各関数 */
-
 function animate() {
     requestAnimationFrame(animate);
     update();

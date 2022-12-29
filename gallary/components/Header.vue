@@ -24,7 +24,6 @@ a {
     list-style: none;
     display: flex;
     width: 80vw;
-    overflow: scroll;
 }
 
 .navi {
