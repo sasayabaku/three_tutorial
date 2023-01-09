@@ -1,6 +1,6 @@
 window.addEventListener('DOMContentLoaded', init);
 
-var camera, scene, renderer;
+var camera, scene, renderer, renderer2;
 
 var isUserInteracting = false,
 onMouseDownMouseX = 0, onMouseDownMouseY = 0,
@@ -49,11 +49,13 @@ function init() {
 
     scene = new THREE.Scene();
 
-    var geometry = new THREE.SphereGeometry( 500, 500, 500 );
+    var geometry = new THREE.SphereGeometry( 100, 100, 100 );
     geometry.scale( - 1, 1, 1 );
 
+    var texture = new THREE.TextureLoader().load('./Panorama2.png');
+
     var material = new THREE.MeshBasicMaterial( {
-        map: new THREE.TextureLoader().load( './view2.jpeg' )
+        map: texture
     } );
 
     mesh = new THREE.Mesh( geometry, material );
@@ -65,6 +67,107 @@ function init() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     container.appendChild( renderer.domElement );
 
+    // Event Listener 読み込み
+    document.addEventListener('mousedown', onDocumentMouseDown, false);
+    document.addEventListener('mousemove', onDocumentMouseMove, false);
+    document.addEventListener('mouseup', onDocumentMouseUp, false);
+    document.addEventListener('wheel', onDocumentMouseWheel, false);
+
+    // Resize検知したら、WebGLのrendererのサイズを変更する
+    window.addEventListener('resize', onWindowResize, false);
+
+    // 画像ファイルをアップロードしたら、その画像のパノラマに変更する。
+    document.addEventListener('dragover', function ( event ) {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'copy';
+    }, false );
+
+    document.addEventListener('dragenter', function ( event ) {
+        document.body.style.opacity = 1;
+    }, false);
+
+    document.addEventListener('drop', function ( event ){
+        event.preventDefault();
+
+        var reader = new FileReader();
+        reader.addEventListener('load', function ( event ) {
+            material.map.image.src = event.target.result;
+            material.map.needsUpdate = true;
+            reload(event.target.result);
+        }, false);
+
+        reader.readAsDataURL( event.dataTransfer.files[0] );
+
+        document.body.style.opacity = 1;
+
+    }, false);
+
+    // Div要素のレンダリングを行う
+    renderer2 = new THREE.CSS3DRenderer();
+    renderer2.domElement.style.position = 'absolute';
+    renderer2.domElement.style.top = 0;
+
+    renderer2.setSize( window.innerWidth, window.innerHeight );
+    container.appendChild( renderer2.domElement );
+
+    let shap = new THREE.Group();
+    var object = new THREE.CSS3DObject(wrapper);
+    object.position.fromArray([0, 10, -200]);
+    object.rotation.fromArray([0, 0, 0]);
+    shap.add(object);
+
+    let shap2 = new THREE.Group();
+    var object2 = new THREE.CSS3DObject(wrapper2);
+    object2.position.fromArray([200, 10, -300]);
+    object2.rotation.fromArray([0, -(Math.PI/4), 0]);
+    shap2.add(object2);
+
+    scene.add(shap);
+    scene.add(shap2);
+
+    // WebGLのDOMレンダリング
+    animate();
+}
+
+function reload(imgsrc) {
+
+    camera, scene, renderer, renderer2 = null;
+
+    var container, mesh;
+
+    container = document.getElementById( 'myCanvas' );
+    
+    // 今あるcanvasを削除
+    while(container.firstChild) {
+        container.removeChild(container.firstChild);
+    };
+
+    camera = new THREE.PerspectiveCamera(
+        75, window.innerWidth / window.innerHeight, 1, 1100 
+    );
+    camera.target = new THREE.Vector3( 0, 0, 0 );
+
+    scene = new THREE.Scene();
+
+    var geometry = new THREE.SphereGeometry( 100, 100, 100 );
+    geometry.scale( - 1, 1, 1 );
+
+    var texture = new THREE.TextureLoader().load(imgsrc);
+
+    var material = new THREE.MeshBasicMaterial( {
+        map: texture
+    } );
+
+    mesh = new THREE.Mesh( geometry, material );
+
+    scene.add( mesh );
+
+    renderer = new THREE.WebGLRenderer();
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    container.appendChild( renderer.domElement );
+
+    // Event Listener 読み込み
     document.addEventListener('mousedown', onDocumentMouseDown, false);
     document.addEventListener('mousemove', onDocumentMouseMove, false);
     document.addEventListener('mouseup', onDocumentMouseUp, false);
@@ -125,6 +228,7 @@ function init() {
     animate();
 }
 
+
 function onWindowResize() {
 
     /**
@@ -146,11 +250,10 @@ function animate() {
 
 function update() {
 
-    if ( isUserInteracting === false ) {
-
-        lon += 0.005;
-
-    }
+    // 視点の自動回転を防ぐ
+    // if ( isUserInteracting === false ) {
+    //     lon += 0.005;
+    // }
 
     lat = Math.max( - 85, Math.min( 85, lat ) );
     phi = THREE.Math.degToRad( 90 - lat );
@@ -163,7 +266,7 @@ function update() {
     camera.lookAt( camera.target );
 
     renderer.render( scene, camera );
-    renderer2.render( scene, camera );
+    // renderer2.render( scene, camera );
 
 }
 
@@ -183,7 +286,7 @@ function onDocumentMouseDown( event ) {
 
     onPointerDownLon = lon;
     onPointerDownLat = lat;
-
+    
 };
 
 function onDocumentMouseMove( event ) {
