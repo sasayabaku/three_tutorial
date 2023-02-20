@@ -1,0 +1,10 @@
+li {
+    list-style: none;
+}
+#operation {
+    position: fixed;
+    height: 200px;
+    width: 300px;
+    background-color: #ffffff55;
+    z-index: 0;
+}

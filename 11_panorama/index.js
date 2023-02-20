@@ -311,3 +311,57 @@ function onDocumentMouseWheel( event ) {
     camera.fov += event.deltaY * 0.05;
     camera.updateProjectionMatrix();
 };
+
+function onDocumentTouchStart( event ) {
+    /**
+     * cameraのlatitude / longitudeを、マウスの移動具合に応じて変更
+     */
+    // event.preventDefault();
+
+    isUserInteracting = true;
+
+    onPointerDownPointerX = event.changedTouches[0].clientX;
+    onPointerDownPointerY = event.changedTouches[0].clientY;
+
+    onPointerDownLon = lon;
+    onPointerDownLat = lat;
+}
+
+function onDocumentTouchMove( event ) {
+
+    if (event.touches.length > 1) {
+        event.preventDefault();
+    }
+
+    if (isUserInteracting === true) {
+        lon = ( onPointerDownPointerX - event.changedTouches[0].clientX ) * 0.15 + onPointerDownLon;
+        lat = ( event.changedTouches[0].clientY - onPointerDownPointerY ) * 0.15 + onPointerDownLat;
+    };
+};
+
+function onDocumentTouchStart( event ) {
+    /**
+     * cameraのlatitude / longitudeを、マウスの移動具合に応じて変更
+     */
+    // event.preventDefault();
+
+    isUserInteracting = true;
+
+    onPointerDownPointerX = event.changedTouches[0].clientX;
+    onPointerDownPointerY = event.changedTouches[0].clientY;
+
+    onPointerDownLon = lon;
+    onPointerDownLat = lat;
+}
+
+function onDocumentTouchMove( event ) {
+
+    if (event.touches.length > 1) {
+        event.preventDefault();
+    }
+
+    if (isUserInteracting === true) {
+        lon = ( onPointerDownPointerX - event.changedTouches[0].clientX ) * 0.15 + onPointerDownLon;
+        lat = ( event.changedTouches[0].clientY - onPointerDownPointerY ) * 0.15 + onPointerDownLat;
+    };
+};
