@@ -6,5 +6,5 @@ li {
     height: 200px;
     width: 300px;
     background-color: #ffffff55;
-    z-index: 0;
+    z-index: 1;
 }

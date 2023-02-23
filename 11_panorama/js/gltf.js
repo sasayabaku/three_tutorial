@@ -43,7 +43,7 @@ iframe.style.border = '0px';
 iframe.src = 'https://my-room-in-3d.vercel.app';
 wrapper2.appendChild(iframe);
 
-function init() {
+async function init() {
 
     var container, mesh;
 
@@ -59,9 +59,9 @@ function init() {
     var geometry = new THREE.SphereGeometry( 100, 100, 100 );
     geometry.scale( - 1, 1, 1 );
 
-    var texture = new THREE.TextureLoader().load('./Panorama1.png');
+    var texture = await new THREE.TextureLoader().load('./Panorama1.png');
 
-    var material = new THREE.MeshBasicMaterial( {
+    var material = await new THREE.MeshBasicMaterial( {
         map: texture
     } );
 
@@ -70,6 +70,7 @@ function init() {
 
     scene.add( mesh );
 
+    if(true){
     // GLTF 3Dモデルloader
     const loader = new THREE.GLTFLoader(); 
     loader.setCrossOrigin('anonymous');
@@ -83,7 +84,7 @@ function init() {
             mesh.rotation.set(0, Math.PI, 0);
 
             let animations = gltf.animations;
-            console.log(animations);
+            // console.log(animations);
             if (animations && animations.length) {
                 mixer = new THREE.AnimationMixer(mesh);
                 for(let i = 0; i < animations.length; i++){
@@ -92,10 +93,11 @@ function init() {
                 }
             }
 
-            // mesh.object.name = "bird";
-            // scene.add(mesh);
+            mesh.name = "bird";
+            scene.add(mesh);
         }
     )
+    }
 
     // ライティング
     const light = new THREE.DirectionalLight("#fff", 2);
@@ -179,6 +181,8 @@ function init() {
 
 function reload(imgsrc) {
 
+    console.log("Reload");
+
     camera, scene, renderer, renderer2 = null;
 
     var container, mesh;
@@ -200,16 +204,18 @@ function reload(imgsrc) {
     var geometry = new THREE.SphereGeometry( 100, 100, 100 );
     geometry.scale( - 1, 1, 1 );
 
-    var texture = new THREE.TextureLoader().load(imgsrc);
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.setCrossOrigin('*');
+    textureLoader.load(
+        imgsrc,
+        texture => {
+            const material = new THREE.MeshBasicMaterial({map:texture});
+            mesh = new THREE.Mesh(geometry, material);
+            mesh.rotation.set(0, Math.PI, 0);
 
-    var material = new THREE.MeshBasicMaterial( {
-        map: texture
-    } );
-
-    mesh = new THREE.Mesh( geometry, material );
-    mesh.rotation.set(0, Math.PI, 0);
-
-    scene.add( mesh );
+            scene.add(mesh);
+        }
+    );
 
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio( window.devicePixelRatio );
@@ -276,7 +282,7 @@ function reload(imgsrc) {
     scene.add(shap2);
 
     // WebGLのDOMレンダリング
-    animate();
+    // animate();
 }
 
 
@@ -302,8 +308,7 @@ function animate() {
 
     const intersects = raycaster.intersectObjects(scene.children);
     if(intersects.length > 1){
-        console.log(intersects);
-
+        // console.log(intersects);
     }
 
     update();
